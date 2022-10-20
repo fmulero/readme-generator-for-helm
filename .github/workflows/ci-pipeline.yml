@@ -25,5 +25,5 @@ jobs:
         run: npm run lint
       - name: Tests
         # Run tests if linter fails
-        if: always() && steps.npm-ci.result == 'success'
+        if: always() && steps.npm-ci.outcome == 'success'
         run: npm test
