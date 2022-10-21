@@ -9,7 +9,8 @@ on: # Test pull requests and any push to main.
 permissions: # Force read permissions
   contents: read
 jobs:
-  build:
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -18,6 +19,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
       - id: npm-ci
         name: Clean install
         run: npm ci
@@ -26,4 +33,4 @@ jobs:
       - name: Tests
         # Run tests if linter fails
         if: always() && steps.npm-ci.outcome == 'success'
-        run: npm test
+        run: npm run test-ci
